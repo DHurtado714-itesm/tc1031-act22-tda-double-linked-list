@@ -1,8 +1,8 @@
 // =================================================================
 //
 // File: list.h
-// Author:
-// Date:
+// Author: Daniel Felipe Hurtado
+// Date: 28 / 09 / 2022
 //
 // =================================================================
 #ifndef DOUBLELINKEDLIST_H
@@ -222,7 +222,21 @@ T DoubleLinkedList<T>::last() const {
 // =================================================================
 template <class T>
 T DoubleLinkedList<T>::before(T val) const {
+	Node<T> *p;
 	
+	if(empty()) {
+		throw NoSuchElement();
+	}
+
+	p = head;
+
+	while (p->next != NULL) {
+		if(p->next->value == val) {
+			return p->value;
+		}
+		p = p->next;
+	}
+
 	return val;
 }
 
@@ -233,6 +247,20 @@ T DoubleLinkedList<T>::before(T val) const {
 // =================================================================
 template <class T>
 T DoubleLinkedList<T>::after(T val) const {
+	Node<T> *p;
+
+	if(empty()) {
+		throw NoSuchElement();
+	}
+
+	p = head;
+
+	while (p->next != NULL) {
+		if(p->value == val) {
+			return p->next->value;
+		}
+		p = p->next;
+	}
 	
 	return val;
 }
@@ -294,7 +322,31 @@ void DoubleLinkedList<T>::push_back(T val) {
 // =================================================================
 template <class T>
 void DoubleLinkedList<T>::insert_before(T lookingFor, T newVal) {
-	// TO DO
+	
+	if (empty()) {
+		throw NoSuchElement();
+	}
+
+	Node<T> *p, *q, *r;
+
+	p = head;
+	while (p != NULL) {
+		if (p->value == lookingFor) {
+			q = new Node<T>(newVal);
+			q->next = p;
+			q->previous = p->previous;
+			p->previous = q;
+			if (q->previous != NULL) {
+				q->previous->next = q;
+			} else {
+				head = q;
+			}
+			size++;
+			return;
+		}
+		p = p->next;
+	}
+
 }
 
 // =================================================================
@@ -304,7 +356,28 @@ void DoubleLinkedList<T>::insert_before(T lookingFor, T newVal) {
 // =================================================================
 template <class T>
 void DoubleLinkedList<T>::insert_after(T lookingFor, T newVal) {
-	// TO DO
+	
+	if (empty()) {
+		throw NoSuchElement();
+	}
+
+	Node<T> *p, *q, *r;
+
+	p = head;
+	while (p != NULL) {
+		if (p->value == lookingFor) {
+			q = new Node<T>(newVal);
+			q->next = p->next;
+			q->previous = p;
+			p->next = q;
+			if (q->next != NULL) {
+				q->next->previous = q;
+			}
+			size++;
+			return;
+		}
+		p = p->next;
+	}
 }
 
 // =================================================================
