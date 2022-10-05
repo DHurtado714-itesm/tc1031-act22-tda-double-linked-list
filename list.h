@@ -222,22 +222,27 @@ T DoubleLinkedList<T>::last() const {
 // =================================================================
 template <class T>
 T DoubleLinkedList<T>::before(T val) const {
-	Node<T> *p;
+	Node<T> *p, *q;
+	p = head;
 	
 	if(empty()) {
 		throw NoSuchElement();
 	}
 
-	p = head;
+	for(int i = 0; i < size; i++) {
 
-	while (p->next != NULL) {
-		if(p->next->value == val) {
-			return p->value;
+		if(val == p->value && i == 0) {
+			throw NoSuchElement();
+		}
+
+		if(p->value == val) {
+			q = p->previous;
+			val = q->value;
 		}
 		p = p->next;
 	}
-
 	return val;
+	throw NoSuchElement();
 }
 
 // =================================================================
@@ -248,14 +253,13 @@ T DoubleLinkedList<T>::before(T val) const {
 template <class T>
 T DoubleLinkedList<T>::after(T val) const {
 	Node<T> *p;
+	p = head;
 
 	if(empty()) {
 		throw NoSuchElement();
 	}
 
-	p = head;
-
-	while (p->next != NULL) {
+	for(int i = 0; i < size; i++) {
 		if(p->value == val) {
 			return p->next->value;
 		}
@@ -263,6 +267,7 @@ T DoubleLinkedList<T>::after(T val) const {
 	}
 	
 	return val;
+	throw NoSuchElement();
 }
 
 // =================================================================
@@ -296,13 +301,13 @@ void DoubleLinkedList<T>::push_front(T val) {
 template <class T>
 void DoubleLinkedList<T>::push_back(T val) {
 	Node<T> *p, *q;
+	p = head;
 
 	if (empty()) {
 		push_front(val);
 		return;
 	}
 
-	p = head;
 	while (p->next != NULL) {
 		p = p->next;
 	}
@@ -324,32 +329,31 @@ template <class T>
 void DoubleLinkedList<T>::insert_before(T lookingFor, T newVal) {
 	Node<T> *p, *q;
 
-	bool flag = false;
-
-	if(contains(lookingFor)) {
-		flag = true;
-	} else{
-		throw NoSuchElement();
-	}
-
 	if(empty()) {
 		throw NoSuchElement();
 	}
 
 	p = head;
 
-	while (p->next != NULL) {
-		if(p->next->value == lookingFor) {
+	while (p != NULL) {
+		if(p->value == lookingFor) {
+			
+			if(p == head) {
+				push_front(newVal);
+				return;
+			}
+
 			q = new Node<T>(newVal);
-			q->next = p->next;
-			q->previous = p;
-			p->next->previous = q;
-			p->next = q;
+			q->next = p;
+			q->previous = p->previous;
+			p->previous->next = q;
+			p->previous = q;
 			size++;
 			return;
 		}
 		p = p->next;
 	}
+	throw NoSuchElement();
 }
 
 // =================================================================
@@ -359,17 +363,13 @@ void DoubleLinkedList<T>::insert_before(T lookingFor, T newVal) {
 // =================================================================
 template <class T>
 void DoubleLinkedList<T>::insert_after(T lookingFor, T newVal) {
+	Node<T> *p, *q, *r;
+	p = head;
 	
-	bool flag = false;
-	if(contains(lookingFor)) {
-		flag = true;
-	} else{
+	if(empty()) {
 		throw NoSuchElement();
 	}
 
-	Node<T> *p, *q, *r;
-
-	p = head;
 	while (p != NULL) {
 		if (p->value == lookingFor) {
 			q = new Node<T>(newVal);
@@ -384,7 +384,9 @@ void DoubleLinkedList<T>::insert_after(T lookingFor, T newVal) {
 		}
 		p = p->next;
 	}
+		throw NoSuchElement();
 }
+
 
 // =================================================================
 // Delete the item at the beginning of the DoubleLinkedList.
