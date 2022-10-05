@@ -224,25 +224,23 @@ template <class T>
 T DoubleLinkedList<T>::before(T val) const {
 	Node<T> *p, *q;
 	p = head;
-	
-	if(empty()) {
+
+	if(empty()){
 		throw NoSuchElement();
 	}
 
-	for(int i = 0; i < size; i++) {
-
-		if(val == p->value && i == 0) {
-			throw NoSuchElement();
-		}
-
-		if(p->value == val) {
-			q = p->previous;
-			val = q->value;
+	while(p != NULL){
+		if(p->value == val){
+			if(p == head){
+				throw NoSuchElement();
+			}
+			return p->previous->value;
 		}
 		p = p->next;
 	}
-	return val;
 	throw NoSuchElement();
+
+	return val;
 }
 
 // =================================================================
@@ -259,15 +257,18 @@ T DoubleLinkedList<T>::after(T val) const {
 		throw NoSuchElement();
 	}
 
-	for(int i = 0; i < size; i++) {
-		if(p->value == val) {
+	while(p != NULL){
+		if(p->value == val){
+			if(p->next == NULL){
+				throw NoSuchElement();
+			}
 			return p->next->value;
 		}
 		p = p->next;
 	}
-	
-	return val;
 	throw NoSuchElement();
+
+	return val;
 }
 
 // =================================================================
